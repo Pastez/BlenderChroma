@@ -20,33 +20,15 @@ bl_info = {
     "category": "Generic"
 }
 
-from . import auto_load
-from .BlenderChroma import BlenderChroma
 import bpy
-
-auto_load.init()
+from .BlenderChroma import BlenderChromaOperator
 
 def register():
-    auto_load.register()
-    bpy.chromaApp = BlenderChroma(bl_info)
+    bpy.utils.register_class(BlenderChromaOperator)
 
 def unregister():
-    auto_load.unregister()
-    del bpy.chromaApp
-    del bpy.chromaAppSubscribe
+    bpy.utils.unregister_class(BlenderChromaOperator)
 
-
-
-def edit_mode_changed(*args):
-    if (bpy.chromaApp):
-        bpy.chromaApp.modeChanged(bpy.context.mode)
-
-bpy.chromaAppSubscribe = {}
-subscribe_to = bpy.types.Object, "mode"
-
-bpy.msgbus.subscribe_rna(
-    key=subscribe_to,
-    owner=bpy.chromaAppSubscribe,
-    args=(1, 2, 3),
-    notify=edit_mode_changed
-    )
+if __name__ == "__main__":
+    register()
+    bpy.ops.pas.blenderchroma('INVOKE_DEFAULT')
